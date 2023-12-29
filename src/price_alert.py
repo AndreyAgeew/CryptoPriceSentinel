@@ -1,6 +1,7 @@
 from database_manager import connect_to_db
 from datetime import datetime, timedelta
 
+
 def check_price_movement():
     conn = connect_to_db()
     if conn:

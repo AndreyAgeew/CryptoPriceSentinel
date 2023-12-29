@@ -34,3 +34,18 @@ def insert_prices_to_db(eth_price, btc_price):
             print(f"Error inserting data into PostgreSQL database: {e}")
         finally:
             conn.close()
+
+
+def get_historical_data():
+    conn = connect_to_db()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            query = "SELECT timestamp, eth_price, btc_price FROM price_data ORDER BY timestamp"
+            cursor.execute(query)
+            return cursor.fetchall()
+        except Exception as e:
+            print(f"Error fetching historical data: {e}")
+        finally:
+            conn.close()
+    return []

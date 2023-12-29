@@ -5,14 +5,13 @@ import time
 
 
 def main():
-    # Выполнение регрессионного анализа
-    perform_regression_analysis()
+    # Получение модели регрессии и последнего изменения цены BTC
+    regression_model = perform_regression_analysis()
 
-    # Периодический сбор и анализ данных
     while True:
         collect_data()
-        check_price_movement()  # передайте модель в функцию оповещения
-        time.sleep(60)  # Пауза 60 секунд
+        check_price_movement(regression_model)  # Передаем модель
+        time.sleep(60)  # Ждем 60 секунд перед следующей проверкой
 
 
 if __name__ == "__main__":

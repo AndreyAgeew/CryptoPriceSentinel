@@ -7,17 +7,15 @@ def perform_regression_analysis():
     data = get_historical_data()
     df = pd.DataFrame(data, columns=['timestamp', 'eth_price', 'btc_price'])
 
-    # Преобразование данных для анализа
     df['eth_return'] = df['eth_price'].pct_change()
     df['btc_return'] = df['btc_price'].pct_change()
     df.dropna(inplace=True)
 
-    # Регрессионный анализ
-    X = df[['btc_return']]  # Независимая переменная
-    y = df['eth_return']  # Зависимая переменная
+    X = df[['btc_return']]
+    y = df['eth_return']
     model = LinearRegression().fit(X, y)
 
-    # Многострочный вывод
+    # Вывод результатов
     print(f"""
     Результаты регрессионного анализа:
     Коэффициент (Coefficients): {model.coef_[0]:.4f}
@@ -31,3 +29,5 @@ def perform_regression_analysis():
     когда изменение цены BTC (btc_return) равно нулю. В реальности это значение имеет ограниченную интерпретацию,
     поскольку цены на криптовалюту редко остаются статичными.
     """)
+
+    return model  # Возвращаем модель

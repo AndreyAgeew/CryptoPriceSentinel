@@ -1,8 +1,9 @@
+import pandas as pd
 from database_manager import connect_to_db
 from datetime import datetime, timedelta
 
 
-def check_price_movement():
+def check_price_movement(regression_model):
     conn = connect_to_db()
     if conn:
         try:
@@ -17,16 +18,23 @@ def check_price_movement():
             records = cursor.fetchall()
 
             if records:
-                start_eth_price, start_btc_price = records[0]
-                end_eth_price, end_btc_price = records[-1]
+                # Преобразование Decimal в float
+                start_eth_price = float(records[0][0])
+                start_btc_price = float(records[0][1])
+                end_eth_price = float(records[-1][0])
+                end_btc_price = float(records[-1][1])
 
                 eth_change = (end_eth_price - start_eth_price) / start_eth_price
                 btc_change = (end_btc_price - start_btc_price) / start_btc_price
 
-                # Проверяем изменение цены ETH по отношению к BTC
-                if abs(eth_change - btc_change) >= 0.01:
-                    print(f"Significant independent movement in ETH price detected: {end_eth_price}")
+                # Создаем DataFrame для предсказания
+                df_for_prediction = pd.DataFrame({'btc_return': [btc_change]})
+                predicted_eth_change = regression_model.predict(df_for_prediction)[0]
+
+                # Проверяем, отличается ли фактическое изменение ETH от предсказанного
+                if abs(eth_change - predicted_eth_change) >= 0.01:
+                    print(f"Значительное независимое изменение в цене ETH обнаружено: {end_eth_price}")
         except Exception as e:
-            print(f"Error checking price movement: {e}")
+            print(f"Ошибка при проверке изменения цен: {e}")
         finally:
             conn.close()

@@ -13,6 +13,12 @@ db_config = {
 
 
 def connect_to_db():
+    """
+    Устанавливает соединение с базой данных PostgreSQL.
+
+    Возвращает:
+        Объект соединения, если подключение успешно, иначе None.
+    """
     try:
         conn = psycopg2.connect(**db_config)
         return conn
@@ -22,6 +28,16 @@ def connect_to_db():
 
 
 def insert_prices_to_db(eth_price, btc_price):
+    """
+    Вставляет последние цены ETH и BTC в базу данных.
+
+    Аргументы:
+        eth_price (float): Последняя цена Ethereum.
+        btc_price (float): Последняя цена Bitcoin.
+
+    Примечания:
+        Временная метка автоматически устанавливается на текущее время.
+    """
     conn = connect_to_db()
     if conn:
         try:
@@ -37,6 +53,12 @@ def insert_prices_to_db(eth_price, btc_price):
 
 
 def get_historical_data():
+    """
+    Получает исторические данные о ценах из базы данных.
+
+    Возвращает:
+        Список кортежей, содержащих временные метки, цены ETH и BTC.
+    """
     conn = connect_to_db()
     if conn:
         try:
